@@ -62,7 +62,6 @@ ExportedObj/
 sysinfo.txt
 *.log
 
-
 # Builds
 *.apk
 *.aab
