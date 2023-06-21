@@ -30,6 +30,7 @@ Thumbs.db.meta
 
 # Visual Studio cache directory
 .vs/
+/html/
 
 # Gradle cache directory
 .gradle/

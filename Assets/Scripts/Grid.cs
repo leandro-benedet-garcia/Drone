@@ -4,21 +4,16 @@ using System.Collections.Generic;
 using UnityEngine;
 
 using Newtonsoft.Json;
-using System;
 
 namespace Drone
 {
-    public struct Tile
-    {
-        public Vector2Int index;
-        public string letterCoordinate;
-        public Dictionary<Tile, float> neighbors;
-    }
-
+    /// <summary>The 2D grid that will be used for the path finding</summary>
     public sealed class Grid
     {
         public string url = "https://mocki.io/v1/10404696-fd43-4481-a7ed-f9369073252f";
-        Dictionary<char, int> _letterToInt = new(){
+
+        /// <summary>Dict used to convert from letters to numbers</summary>
+        private readonly Dictionary<char, int> _letterToInt = new(){
             {'A', 0},
             {'B', 1},
             {'C', 2},
@@ -27,43 +22,26 @@ namespace Drone
             {'G', 5},
             {'H', 6}
         };
+        private Dictionary<string, TileData> _allTiles;
 
-        Dictionary<string, Tile> _allTiles;
-
-        Dictionary<string, Dictionary<string, float>> DownloadAndParseGridData()
+        private Dictionary<string, Dictionary<string, float>> DownloadAndParseGridData()
         {
-            using var wc = new WebClient();
-            var json = wc.DownloadString(url);
+            using WebClient wc = new WebClient();
+            string json = wc.DownloadString(url);
             return JsonConvert.DeserializeObject<Dictionary<string, Dictionary<string, float>>>(json);
         }
 
-        void GenerateGrid()
+        /// <summary>Return an already created tile or create a new one if a tile with the coordinates does not already exist</summary>
+        /// <param name="key">The coordinate in the format A2</param>
+        /// <returns>A brand new or already existing Tile</returns>
+        private TileData GetOrCreateTile(string key)
         {
-            _allTiles = new();
-            var parsed = DownloadAndParseGridData();
-
-            foreach (var currParsedTile in parsed)
+            if (_allTiles.ContainsKey(key))
             {
-                var neighbors = currParsedTile.Value;
-                var neighborLen = neighbors.Count;
-
-                Tile currTile = GetOrCreateTile(currParsedTile.Key);
-                foreach (var currNeighbor in neighbors)
-                {
-                    var converted = GetOrCreateTile(currNeighbor.Key);
-
-                    // For some reason the distances are different back and forth
-                    // Otherwise I would add each other as a neighbor here.
-                    currTile.neighbors[converted] = currNeighbor.Value;
-                }
+                return _allTiles[key];
             }
-        }
 
-        Tile GetOrCreateTile(string key)
-        {
-            if (_allTiles.ContainsKey(key)) return _allTiles[key];
-
-            var createdTile = new Tile
+            TileData createdTile = new TileData
             {
                 index = FromLetterNumberToVector(key),
                 letterCoordinate = key,
@@ -74,7 +52,7 @@ namespace Drone
         }
 
         /// <summary>Transform letter and number coordinate system to a Vector to be used by Unity later</summary>
-        Vector2Int FromLetterNumberToVector(string letterAndNumber)
+        private Vector2Int FromLetterNumberToVector(string letterAndNumber)
         {
             var firstNumber = _letterToInt[letterAndNumber[0]];
             var secondNumber = (int)letterAndNumber[1];
