@@ -34,6 +34,12 @@ jobs:
             UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
             UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
             UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+      - uses: mattnotmitt/doxygen-action@v1.9.5
+      - uses: actions/upload-artifact@v2
+        with:
+          name: Test results (all modes)
+          path: ${{ steps.testRunner.outputs.artifactsPath }}
+
   BuildWebGL:
     needs: TestRunner
     name: Build for WebGL
@@ -71,4 +77,3 @@ jobs:
             UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
         with:
             targetPlatform: WebGL
-      - uses: mattnotmitt/doxygen-action@v1.9.5
