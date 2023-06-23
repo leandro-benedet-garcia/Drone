@@ -1,12 +1,14 @@
 using UnityEngine;
 using System.Collections.Generic;
 
+using TMPro;
 
 namespace Drone
 {
+  [SerializeField]
   public struct TileData
   {
-    public Vector3 index;
+    public Vector3 globalCoordinates;
     public string letterCoordinate;
     public Dictionary<TileData, float> neighbors;
   }
@@ -18,7 +20,9 @@ namespace Drone
     public void Initialize(TileData data)
     {
       _data = data;
-      transform.localPosition = data.index;
+      transform.localPosition = data.globalCoordinates;
+      var text = transform.Find("Text").GetComponent<TextMeshPro>();
+      text.text = data.letterCoordinate;
     }
   }
 }
