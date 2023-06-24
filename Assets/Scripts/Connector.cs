@@ -1,7 +1,5 @@
 using UnityEngine;
 
-using TMPro;
-
 namespace Drone
 {
   class Connector : MonoBehaviour

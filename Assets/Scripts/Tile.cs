@@ -10,7 +10,7 @@ namespace Drone
   {
     public Vector3 globalCoordinates;
     public string letterCoordinate;
-    public Dictionary<TileData, float> neighbors;
+    public Dictionary<string, float> neighbors;
   }
 
   public class Tile : MonoBehaviour

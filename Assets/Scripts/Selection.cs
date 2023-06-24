@@ -15,7 +15,8 @@ namespace Drone
     void Awake()
     {
       _informationText = GameObject.Find("Canvas/SelectionInformation")
-                                   .GetComponent<TextMeshProUGUI>() ?? throw new("Component Not found");
+                                   .GetComponent<TextMeshProUGUI>()
+                                   ?? throw new("Component Not found");
     }
 
     void OnMouseClick(InputValue value)
@@ -32,7 +33,6 @@ namespace Drone
                       .transform
                       .parent;
         var connector = selected.GetComponent<Connector>();
-        Debug.Log(selected.name);
         _informationText.text = $@"From {connector.from.letterCoordinate}
 To {connector.to.letterCoordinate}
 Distance {connector.distance}";

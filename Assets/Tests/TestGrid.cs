@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.TestTools;
 
 using System.Collections;
+using System.Collections.Generic;
 
 namespace Drone.Tests
 {
@@ -22,21 +23,24 @@ namespace Drone.Tests
     [Test]
     public void TestGridCreation()
     {
-      foreach (var currTile in _grid.allTiles)
+      foreach (var currTile in _grid.parsed)
       {
-        var coordinate = currTile.Key;
+        var currCoordinate = currTile.Key;
+        var tileInGrid = _grid[currCoordinate];
 
-        Assert.True(char.IsLetter(coordinate[0]));
-        Assert.True(char.IsNumber(coordinate[1]));
+        Assert.True(char.IsLetter(currCoordinate[0]));
+        Assert.True(char.IsNumber(currCoordinate[1]));
 
-        var neighbors = currTile.Value
-                                                            .neighbors;
+        var neighbors = tileInGrid.neighbors;
 
         Assert.IsNotEmpty(neighbors);
+        Assert.False(neighbors.ContainsKey(currCoordinate));
 
-        foreach (var neighbor in neighbors)
+        foreach (var neighbor in currTile.Value)
         {
-          var neighborCoordinate = neighbor.Key.letterCoordinate;
+          var neighborCoordinate = neighbor.Key;
+
+          Assert.Contains(neighborCoordinate, neighbors.Keys);
 
           // no need to test for the time because the parser automatically raises an error if it were to be invalid
           Assert.True(char.IsLetter(neighborCoordinate[0]));
@@ -48,7 +52,18 @@ namespace Drone.Tests
     [Test]
     public void TestShortestPath()
     {
+      var A1ToA1 = new List<string>(){"A1"};
+      var A1ToA3 = new List<string>(){"A1", "A2", "A3"};
+      var A1ToA4 = new List<string>(){"A1", "A2", "A3", "A4"};
 
+      var calculatedPath = _grid.GetShortestPath("A1", "A1");
+      Assert.AreEqual(A1ToA1, calculatedPath);
+
+      calculatedPath = _grid.GetShortestPath("A1", "A3");
+      Assert.AreEqual(A1ToA3, calculatedPath);
+
+      calculatedPath = _grid.GetShortestPath("A1", "A4");
+      Assert.AreEqual(A1ToA4, calculatedPath);
     }
   }
 }

@@ -20,8 +20,10 @@ namespace Drone
   {
     public string url = "https://mocki.io/v1/10404696-fd43-4481-a7ed-f9369073252f";
     readonly Dictionary<string, CachedPath> _cachedPaths = new();
+    public Dictionary<string, Dictionary<string, float>> parsed;
     [SerializeField] Tile _tilePrefab;
     [SerializeField] Connector _connectorPrefab;
+
 
     /// <summary>Dict used to convert from letters to numbers</summary>
     private readonly Dictionary<char, int> _letterToInt = new(){
@@ -36,11 +38,16 @@ namespace Drone
         };
     public Dictionary<string, TileData> allTiles;
 
+    public TileData this[string coordinate]{
+      get => allTiles[coordinate];
+      set => allTiles[coordinate] = value;
+    }
+
     /// <summary>This is a default unity function, it is called when the object is instantiated into the scene</summary>
     [ButtonMethod]
     void Awake()
     {
-      var parsed = DownloadAndParseGridData(url);
+      parsed = DownloadAndParseGridData(url);
       GenerateGrid(parsed);
     }
 
@@ -67,9 +74,10 @@ namespace Drone
         foreach (var currNeighbor in neighbors)
         {
           var neighborDistance = currNeighbor.Value;
-          var converted = GetOrCreateTile(currNeighbor.Key);
+          var neighborCoordinate = currNeighbor.Key;
+          var converted = GetOrCreateTile(neighborCoordinate);
 
-          converted.neighbors[converted] = neighborDistance;
+          currTile.neighbors[neighborCoordinate] = neighborDistance;
 
           // Since I want to have a visualization of the grid paths,
           // I am adding a connector between the tiles and their neighbors
@@ -109,7 +117,7 @@ namespace Drone
     }
 
     /// <summary>Find the shortest paths between start and end using Dijkstras algorithm
-    /// All paths to start node is automatically cached so if it is asked again, there's no need to recalculate it</summary>
+    /// All paths to start node are automatically cached so if it is asked again, there's no need to recalculate it</summary>
     public List<string> GetShortestPath(string startPosition, string endPosition)
     {
       // If the API were dynamic, we would recreate the grid in here by simply called Awake after deleting the grid
@@ -147,6 +155,12 @@ namespace Drone
       var unvisitedNodes = allTiles.Keys.ToList();
       var shortestPath = new Dictionary<string, float>();
       var previousNodes = new Dictionary<string, string>();
+
+      foreach (var currNode in unvisitedNodes)
+      {
+        shortestPath[currNode] = float.MaxValue;
+      }
+
       shortestPath[startPosition] = 0;
 
       while (unvisitedNodes.Count > 0)
@@ -155,22 +169,26 @@ namespace Drone
         foreach (var currNode in unvisitedNodes)
         {
           if (minNode == null) minNode = currNode;
-          else if (shortestPath.GetValueOrDefault(currNode, float.MaxValue) < shortestPath[minNode]) minNode = currNode;
+          else if (shortestPath[currNode] < shortestPath[minNode]) minNode = currNode;
         }
 
         var neighbors = GetNeighbors(minNode);
         foreach (var currNeighbor in neighbors)
         {
+          var neighborCoordinate = currNeighbor.Key;
           var totalCost = shortestPath[minNode] + currNeighbor.Value;
-          if (totalCost < shortestPath[minNode])
+          Debug.Log($"{neighborCoordinate}={totalCost}?{shortestPath[neighborCoordinate]}");
+          if (totalCost < shortestPath[neighborCoordinate])
           {
-            var neighborCoordinate = currNeighbor.Key.letterCoordinate;
+            Debug.Log($"{neighborCoordinate}: {totalCost}");
             shortestPath[neighborCoordinate] = totalCost;
             previousNodes[neighborCoordinate] = minNode;
           }
         }
         unvisitedNodes.Remove(minNode);
       }
+      foreach (var node in previousNodes)
+        Debug.Log($"{node.Key}->{node.Value}");
       return new CachedPath
       {
         shortestPath = shortestPath,
@@ -178,6 +196,6 @@ namespace Drone
       };
     }
 
-    Dictionary<TileData, float> GetNeighbors(string coordinates) => allTiles[coordinates].neighbors;
+    Dictionary<string, float> GetNeighbors(string coordinates) => allTiles[coordinates].neighbors;
   }
 }
