@@ -40,7 +40,6 @@ namespace Drone
 
     public TileData this[string coordinate]{
       get => allTiles[coordinate];
-      set => allTiles[coordinate] = value;
     }
 
     /// <summary>This is a default unity function, it is called when the object is instantiated into the scene</summary>
@@ -146,6 +145,7 @@ namespace Drone
         node = previousNodes[node];
       }
       path.Add(startPosition);
+      path.Reverse();
       return path;
     }
 
@@ -177,18 +177,14 @@ namespace Drone
         {
           var neighborCoordinate = currNeighbor.Key;
           var totalCost = shortestPath[minNode] + currNeighbor.Value;
-          Debug.Log($"{neighborCoordinate}={totalCost}?{shortestPath[neighborCoordinate]}");
           if (totalCost < shortestPath[neighborCoordinate])
           {
-            Debug.Log($"{neighborCoordinate}: {totalCost}");
             shortestPath[neighborCoordinate] = totalCost;
             previousNodes[neighborCoordinate] = minNode;
           }
         }
         unvisitedNodes.Remove(minNode);
       }
-      foreach (var node in previousNodes)
-        Debug.Log($"{node.Key}->{node.Value}");
       return new CachedPath
       {
         shortestPath = shortestPath,

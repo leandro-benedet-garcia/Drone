@@ -1,10 +1,9 @@
 using NUnit.Framework;
 
 using UnityEngine;
-using UnityEngine.TestTools;
 
-using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace Drone.Tests
 {
@@ -12,10 +11,9 @@ namespace Drone.Tests
   {
     Grid _grid;
 
-    [UnitySetUp]
-    public IEnumerator GlobalSetup()
+    [OneTimeSetUp]
+    public void GlobalSetup()
     {
-      yield return new EnterPlayMode();
       var gridPrefab = Resources.Load<Grid>("Grid") ?? throw new("Resource Grid Not found");
       _grid = Object.Instantiate(gridPrefab);
     }
@@ -52,18 +50,37 @@ namespace Drone.Tests
     [Test]
     public void TestShortestPath()
     {
-      var A1ToA1 = new List<string>(){"A1"};
-      var A1ToA3 = new List<string>(){"A1", "A2", "A3"};
-      var A1ToA4 = new List<string>(){"A1", "A2", "A3", "A4"};
+      var A1ToA1 = new List<string>() { "A1" };
+      var A1ToA3 = new List<string>() { "A1", "A2", "A3" };
+      var A1ToA4 = new List<string>() { "A1", "A2", "A3", "A4" };
+      var A1ToH8 = new List<string>(){"A1", "B1", "C1", "C2", "C3", "D3", "E3",
+                                      "F3", "F4", "F5", "F6", "G6", "G7", "H7",
+                                      "H8"};
 
+      // Nothing is done, A1 needs to be returned immediately
       var calculatedPath = _grid.GetShortestPath("A1", "A1");
       Assert.AreEqual(A1ToA1, calculatedPath);
 
+      var watch = Stopwatch.StartNew();
+      // Now the algorithm needs to work.
       calculatedPath = _grid.GetShortestPath("A1", "A3");
       Assert.AreEqual(A1ToA3, calculatedPath);
+      watch.Stop();
+
+      var firstRunTime = watch.ElapsedMilliseconds;
+
+      watch = Stopwatch.StartNew();
+      // This one must be executed faster than the first time because of cache
+      calculatedPath = _grid.GetShortestPath("A1", "A3");
+      Assert.AreEqual(A1ToA3, calculatedPath);
+      watch.Stop();
+      Assert.Less(watch.ElapsedMilliseconds, firstRunTime);
 
       calculatedPath = _grid.GetShortestPath("A1", "A4");
       Assert.AreEqual(A1ToA4, calculatedPath);
+
+      calculatedPath = _grid.GetShortestPath("A1", "H8");
+      Assert.AreEqual(A1ToH8, calculatedPath);
     }
   }
 }
