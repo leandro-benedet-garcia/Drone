@@ -9,17 +9,11 @@ using MyBox;
 
 namespace Drone
 {
-  struct CachedPath
-  {
-    public Dictionary<string, string> previousNodes;
-    public Dictionary<string, float> shortestPath;
-  }
-
   /// <summary>The 2D grid that will be used for the path finding</summary>
   public sealed class Grid : MonoBehaviour
   {
     public string url = "https://mocki.io/v1/10404696-fd43-4481-a7ed-f9369073252f";
-    readonly Dictionary<string, CachedPath> _cachedPaths = new();
+    readonly Dictionary<string, Dictionary<string, string>> _cachedPaths = new();
     public Dictionary<string, Dictionary<string, float>> parsed;
     [SerializeField] Tile _tilePrefab;
     [SerializeField] Connector _connectorPrefab;
@@ -121,10 +115,10 @@ namespace Drone
     {
       // If the API were dynamic, we would recreate the grid in here by simply called Awake after deleting the grid
       // But since it is static, we don't have to.
-      CachedPath currCachedPath;
+      Dictionary<string, string> currCachedPath;
       var path = new List<string>();
 
-      // No need todo anything other than return start position if the start and end are the same
+      // No need to do anything other than return start position if the start and end are the same
       if (startPosition == endPosition)
       {
         path.Add(startPosition);
@@ -137,12 +131,11 @@ namespace Drone
         _cachedPaths[startPosition] = currCachedPath;
       }
 
-      var previousNodes = currCachedPath.previousNodes;
       var node = endPosition;
       while (node != startPosition)
       {
         path.Add(node);
-        node = previousNodes[node];
+        node = currCachedPath[node];
       }
       path.Add(startPosition);
       path.Reverse();
@@ -150,7 +143,7 @@ namespace Drone
     }
 
     /// <summary>Find all paths to the start position using Dijkstras algorithm</summary>
-    CachedPath FindAllPathsFrom(string startPosition)
+    Dictionary<string, string> FindAllPathsFrom(string startPosition)
     {
       var unvisitedNodes = allTiles.Keys.ToList();
       var shortestPath = new Dictionary<string, float>();
@@ -185,11 +178,7 @@ namespace Drone
         }
         unvisitedNodes.Remove(minNode);
       }
-      return new CachedPath
-      {
-        shortestPath = shortestPath,
-        previousNodes = previousNodes
-      };
+      return previousNodes;
     }
 
     Dictionary<string, float> GetNeighbors(string coordinates) => allTiles[coordinates].neighbors;

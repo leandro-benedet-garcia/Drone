@@ -53,6 +53,9 @@ namespace Drone.Tests
       var A1ToA1 = new List<string>() { "A1" };
       var A1ToA3 = new List<string>() { "A1", "A2", "A3" };
       var A1ToA4 = new List<string>() { "A1", "A2", "A3", "A4" };
+
+      // Where we going, we don't need diagonals
+      // At first, I tried with diagonals, but my own code reminded that there were no diagonals in the API
       var A1ToH8 = new List<string>(){"A1", "B1", "C1", "C2", "C3", "D3", "E3",
                                       "F3", "F4", "F5", "F6", "G6", "G7", "H7",
                                       "H8"};
