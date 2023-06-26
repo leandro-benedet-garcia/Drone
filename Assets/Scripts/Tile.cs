@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 using TMPro;
 
-namespace Drone
+namespace DroneGame
 {
   [SerializeField]
   public struct TileData

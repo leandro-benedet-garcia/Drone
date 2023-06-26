@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Drone
+namespace DroneGame
 {
   class Connector : MonoBehaviour
   {

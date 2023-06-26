@@ -5,7 +5,7 @@ using UnityEngine;
 using System.Collections.Generic;
 using System.Diagnostics;
 
-namespace Drone.Tests
+namespace DroneGame.Tests
 {
   public class TestGrid
   {
@@ -83,6 +83,15 @@ namespace Drone.Tests
       Assert.AreEqual(A1ToA4, calculatedPath);
 
       calculatedPath = _grid.GetShortestPath("A1", "H8");
+      Assert.AreEqual(A1ToH8, calculatedPath);
+
+      calculatedPath = _grid.GetShortestPath(new string[] { "A1", "H8" });
+      Assert.AreEqual(A1ToH8, calculatedPath);
+
+      calculatedPath = _grid.GetShortestPath(new string[] { "A1", "F5", "H8" });
+      Assert.AreEqual(A1ToH8, calculatedPath);
+
+      calculatedPath = _grid.GetShortestPath(new string[] { "A1", "F5", "G6", "H8" });
       Assert.AreEqual(A1ToH8, calculatedPath);
     }
   }

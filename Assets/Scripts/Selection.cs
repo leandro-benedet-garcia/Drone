@@ -1,11 +1,9 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-
 using TMPro;
 
-
-namespace Drone
+namespace DroneGame
 {
   class Selection : MonoBehaviour
   {
@@ -22,10 +20,10 @@ namespace Drone
     void OnMouseClick(InputValue value)
     {
       var mousePosition = Mouse.current
-                                       .position
-                                       .ReadValue();
+                               .position
+                               .ReadValue();
       var ray = Camera.main
-                          .ScreenPointToRay(mousePosition);
+                      .ScreenPointToRay(mousePosition);
 
       if (Physics.Raycast(ray, out RaycastHit hit))
       {

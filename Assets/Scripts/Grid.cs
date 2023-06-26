@@ -5,19 +5,25 @@ using System.Linq;
 using UnityEngine;
 
 using Newtonsoft.Json;
+
 using MyBox;
 
-namespace Drone
+namespace DroneGame
 {
+  public sealed class ParsedData : Dictionary<string, Dictionary<string, float>>
+  {
+
+  }
+
   /// <summary>The 2D grid that will be used for the path finding</summary>
   public sealed class Grid : MonoBehaviour
   {
     public string url = "https://mocki.io/v1/10404696-fd43-4481-a7ed-f9369073252f";
     readonly Dictionary<string, Dictionary<string, string>> _cachedPaths = new();
-    public Dictionary<string, Dictionary<string, float>> parsed;
+    public ParsedData parsed;
     [SerializeField] Tile _tilePrefab;
     [SerializeField] Connector _connectorPrefab;
-
+    [SerializeField] Drone _drone;
 
     /// <summary>Dict used to convert from letters to numbers</summary>
     private readonly Dictionary<char, int> _letterToInt = new(){
@@ -30,11 +36,14 @@ namespace Drone
             {'G', 6},
             {'H', 7}
         };
-    public Dictionary<string, TileData> allTiles;
+    Dictionary<string, TileData> _allTiles;
 
-    public TileData this[string coordinate]{
-      get => allTiles[coordinate];
+    public TileData this[string coordinate]
+    {
+      get => _allTiles[coordinate];
     }
+
+    public Vector3 GetTileWorldCoordinate(string coordinate) => _allTiles[coordinate].globalCoordinates;
 
     /// <summary>This is a default unity function, it is called when the object is instantiated into the scene</summary>
     [ButtonMethod]
@@ -44,16 +53,21 @@ namespace Drone
       GenerateGrid(parsed);
     }
 
-    Dictionary<string, Dictionary<string, float>> DownloadAndParseGridData(string url)
+    void Start()
+    {
+      StartCoroutine(_drone.FollowPath(GetShortestPathTiles(new string[] { "A1", "A3", "H8" })));
+    }
+
+    ParsedData DownloadAndParseGridData(string url)
     {
       using var wc = new WebClient();
       var json = wc.DownloadString(url);
-      return JsonConvert.DeserializeObject<Dictionary<string, Dictionary<string, float>>>(json);
+      return JsonConvert.DeserializeObject<ParsedData>(json);
     }
 
-    void GenerateGrid(Dictionary<string, Dictionary<string, float>> parsed)
+    void GenerateGrid(ParsedData parsed)
     {
-      allTiles = new();
+      _allTiles = new();
 
       foreach (var currParsedTile in parsed)
       {
@@ -85,9 +99,9 @@ namespace Drone
     /// <returns>A brand new or already existing Tile</returns>
     private TileData GetOrCreateTile(string key)
     {
-      if (allTiles.ContainsKey(key))
+      if (_allTiles.ContainsKey(key))
       {
-        return allTiles[key];
+        return _allTiles[key];
       }
 
       var createdTile = new TileData
@@ -96,7 +110,7 @@ namespace Drone
         letterCoordinate = key,
         neighbors = new()
       };
-      allTiles[key] = createdTile;
+      _allTiles[key] = createdTile;
       return createdTile;
     }
 
@@ -109,8 +123,45 @@ namespace Drone
       return new(firstNumber, 0, secondNumber);
     }
 
+    public List<TileData> GetShortestPathTiles(string startPosition, string endPosition)
+    {
+      var returnList = new List<TileData>();
+      foreach (var currCoordinate in GetShortestPath(startPosition, endPosition)) returnList.Add(_allTiles[currCoordinate]);
+      return returnList;
+    }
+
+    public List<TileData> GetShortestPathTiles(string[] positions)
+    {
+      var returnList = new List<TileData>();
+      foreach (var currCoordinate in GetShortestPath(positions)) returnList.Add(_allTiles[currCoordinate]);
+      return returnList;
+    }
+
+    // TODO: Convert this into an async operation
+    public List<string> GetShortestPath(string[] positions)
+    {
+      var positionsLen = positions.Length;
+      if (positionsLen < 2) throw new("positions need to have at least 2 items");
+
+      var returnList = new List<string>();
+      for (int pathIndex = 1; pathIndex < positionsLen; pathIndex++)
+      {
+        var previousCoordinate = positions[pathIndex - 1];
+        var nextCoordinate = positions[pathIndex];
+
+        var currPath = GetShortestPath(previousCoordinate, nextCoordinate);
+
+        if (pathIndex < positionsLen - 1) currPath.RemoveAt(currPath.Count - 1);
+
+        returnList = returnList.Concat(currPath).ToList();
+      }
+      return returnList;
+    }
+
+
     /// <summary>Find the shortest paths between start and end using Dijkstras algorithm
     /// All paths to start node are automatically cached so if it is asked again, there's no need to recalculate it</summary>
+    /// <seealso cref="FindAllPathsFrom"/>
     public List<string> GetShortestPath(string startPosition, string endPosition)
     {
       // If the API were dynamic, we would recreate the grid in here by simply called Awake after deleting the grid
@@ -142,10 +193,12 @@ namespace Drone
       return path;
     }
 
-    /// <summary>Find all paths to the start position using Dijkstras algorithm</summary>
+    /// <summary>Find all paths to the start position using Dijkstras algorithm
+    /// This is necessary because the API only have seconds instead of distance, which we can use as weight
+    /// if we had distance information, we could use A* which is more effective</summary>
     Dictionary<string, string> FindAllPathsFrom(string startPosition)
     {
-      var unvisitedNodes = allTiles.Keys.ToList();
+      var unvisitedNodes = _allTiles.Keys.ToList();
       var shortestPath = new Dictionary<string, float>();
       var previousNodes = new Dictionary<string, string>();
 
@@ -181,6 +234,6 @@ namespace Drone
       return previousNodes;
     }
 
-    Dictionary<string, float> GetNeighbors(string coordinates) => allTiles[coordinates].neighbors;
+    Dictionary<string, float> GetNeighbors(string coordinates) => _allTiles[coordinates].neighbors;
   }
 }
