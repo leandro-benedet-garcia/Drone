@@ -1,4 +1,6 @@
 # Drone
+![code coverage badge](https://raw.githubusercontent.com/leandro-benedet-garcia/Drone/gh-pages/code_coverage/badge_linecoverage.svg)
+
 This is a mini application made in Unity version 2021.3.25f1
 
 The objective is to show a grid formed from an API and then allow the user to
