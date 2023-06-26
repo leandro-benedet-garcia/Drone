@@ -7,7 +7,7 @@ namespace DroneGame
   class Drone : MonoBehaviour
   {
     Grid _grid;
-    bool _alreadyMoving;
+    public bool alreadyMoving;
 
     /// <summary>Set the move speed of the drone</summary>
     [SerializeField]
@@ -26,9 +26,9 @@ namespace DroneGame
     /// Make drone move along the specified path.</summary>
     public IEnumerator FollowPath(List<TileData> path)
     {
-      if (_alreadyMoving) throw new("Drone is already moving");
+      if (alreadyMoving) throw new("Drone is already moving");
 
-      _alreadyMoving = true;
+      alreadyMoving = true;
 
       for (int tileIndex = 1; tileIndex < path.Count; tileIndex++)
       {
@@ -47,7 +47,7 @@ namespace DroneGame
           currLerp += currSpeed;
         }
       }
-      _alreadyMoving = false;
+      alreadyMoving = false;
     }
   }
 }

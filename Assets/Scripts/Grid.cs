@@ -7,6 +7,9 @@ using UnityEngine;
 using Newtonsoft.Json;
 
 using MyBox;
+using System;
+using UnityEngine.Tilemaps;
+using TMPro;
 
 namespace DroneGame
 {
@@ -21,9 +24,19 @@ namespace DroneGame
     public string url = "https://mocki.io/v1/10404696-fd43-4481-a7ed-f9369073252f";
     readonly Dictionary<string, Dictionary<string, string>> _cachedPaths = new();
     public ParsedData parsed;
+
+    [Header("Prefabs")]
     [SerializeField] Tile _tilePrefab;
     [SerializeField] Connector _connectorPrefab;
     [SerializeField] Drone _drone;
+
+    [Header("UI Inputs")]
+    [SerializeField] TMP_InputField _startCoordinateInput;
+    [SerializeField] TMP_InputField _pickupCoordinateInput;
+    [SerializeField] TMP_InputField _dropOffCoordinateInput;
+
+
+    readonly HashSet<Tile> _changedColorsTiles = new();
 
     /// <summary>Dict used to convert from letters to numbers</summary>
     private readonly Dictionary<char, int> _letterToInt = new(){
@@ -36,14 +49,15 @@ namespace DroneGame
             {'G', 6},
             {'H', 7}
         };
-    Dictionary<string, TileData> _allTiles;
+    Dictionary<string, TileData> _allTilesData;
+    Dictionary<string, Tile> _allTiles;
 
     public TileData this[string coordinate]
     {
-      get => _allTiles[coordinate];
+      get => _allTilesData[coordinate];
     }
 
-    public Vector3 GetTileWorldCoordinate(string coordinate) => _allTiles[coordinate].globalCoordinates;
+    public Vector3 GetTileWorldCoordinate(string coordinate) => _allTilesData[coordinate].globalCoordinates;
 
     /// <summary>This is a default unity function, it is called when the object is instantiated into the scene</summary>
     [ButtonMethod]
@@ -53,9 +67,33 @@ namespace DroneGame
       GenerateGrid(parsed);
     }
 
-    void Start()
+    public void MoveDrone()
     {
-      StartCoroutine(_drone.FollowPath(GetShortestPathTiles(new string[] { "A1", "A3", "H8" })));
+      if (_drone.alreadyMoving) return;
+
+      var start = _startCoordinateInput.text;
+      var pickup = _pickupCoordinateInput.text;
+      var dropOff = _dropOffCoordinateInput.text;
+
+      ResetColors();
+      SetColor(start, Color.green);
+      SetColor(pickup, Color.yellow);
+      SetColor(dropOff, Color.blue);
+
+      StartCoroutine(_drone.FollowPath(GetShortestPathTiles(new string[] { start, pickup, dropOff })));
+    }
+
+    private void ResetColors()
+    {
+      foreach(var currTile in _changedColorsTiles) currTile.ResetColor();
+      _changedColorsTiles.Clear();
+    }
+
+    private void SetColor(string coords, Color color)
+    {
+      var tileToChange = _allTiles[coords];
+      tileToChange.SetColor(color);
+      _changedColorsTiles.Add(tileToChange);
     }
 
     ParsedData DownloadAndParseGridData(string url)
@@ -67,16 +105,20 @@ namespace DroneGame
 
     void GenerateGrid(ParsedData parsed)
     {
+      _allTilesData = new();
       _allTiles = new();
 
       foreach (var currParsedTile in parsed)
       {
+        var coordinate = currParsedTile.Key;
         var neighbors = currParsedTile.Value;
 
-        var currTile = GetOrCreateTile(currParsedTile.Key);
+        var currTile = GetOrCreateTile(coordinate);
 
         var currInstance = Instantiate(_tilePrefab, transform);
         currInstance.Initialize(currTile);
+
+        _allTiles[coordinate] = currInstance;
 
         foreach (var currNeighbor in neighbors)
         {
@@ -99,9 +141,9 @@ namespace DroneGame
     /// <returns>A brand new or already existing Tile</returns>
     private TileData GetOrCreateTile(string key)
     {
-      if (_allTiles.ContainsKey(key))
+      if (_allTilesData.ContainsKey(key))
       {
-        return _allTiles[key];
+        return _allTilesData[key];
       }
 
       var createdTile = new TileData
@@ -110,7 +152,7 @@ namespace DroneGame
         letterCoordinate = key,
         neighbors = new()
       };
-      _allTiles[key] = createdTile;
+      _allTilesData[key] = createdTile;
       return createdTile;
     }
 
@@ -126,14 +168,14 @@ namespace DroneGame
     public List<TileData> GetShortestPathTiles(string startPosition, string endPosition)
     {
       var returnList = new List<TileData>();
-      foreach (var currCoordinate in GetShortestPath(startPosition, endPosition)) returnList.Add(_allTiles[currCoordinate]);
+      foreach (var currCoordinate in GetShortestPath(startPosition, endPosition)) returnList.Add(_allTilesData[currCoordinate]);
       return returnList;
     }
 
     public List<TileData> GetShortestPathTiles(string[] positions)
     {
       var returnList = new List<TileData>();
-      foreach (var currCoordinate in GetShortestPath(positions)) returnList.Add(_allTiles[currCoordinate]);
+      foreach (var currCoordinate in GetShortestPath(positions)) returnList.Add(_allTilesData[currCoordinate]);
       return returnList;
     }
 
@@ -198,7 +240,7 @@ namespace DroneGame
     /// if we had distance information, we could use A* which is more effective</summary>
     Dictionary<string, string> FindAllPathsFrom(string startPosition)
     {
-      var unvisitedNodes = _allTiles.Keys.ToList();
+      var unvisitedNodes = _allTilesData.Keys.ToList();
       var shortestPath = new Dictionary<string, float>();
       var previousNodes = new Dictionary<string, string>();
 
@@ -234,6 +276,6 @@ namespace DroneGame
       return previousNodes;
     }
 
-    Dictionary<string, float> GetNeighbors(string coordinates) => _allTiles[coordinates].neighbors;
+    Dictionary<string, float> GetNeighbors(string coordinates) => _allTilesData[coordinates].neighbors;
   }
 }
