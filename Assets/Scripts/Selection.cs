@@ -17,6 +17,7 @@ namespace DroneGame
                                    ?? throw new("Component Not found");
     }
 
+    /// <summary>Function executed when the players select a tile</summary>
     void OnMouseClick(InputValue value)
     {
       var mousePosition = Mouse.current

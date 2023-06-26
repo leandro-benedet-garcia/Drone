@@ -11,21 +11,36 @@ using MyBox;
 
 namespace DroneGame
 {
+  /// <summary>Mostly just a short way to type the dictionary inside a dictionary
+  /// for the parsed data from the API</summary>
   public sealed class ParsedData : Dictionary<string, Dictionary<string, float>>
   {
 
   }
 
+  /// <summary>The returned final path</summary>
   public struct PathReturn
   {
+    /// <summary>Calculated total time that it would take the drone to travel</summary>
     public float totalTime;
+
+    /// <summary>The path in coordinates</summary>
     public List<string> path;
+
+    /// <summary>The tile data of the coordinates</summary>
     public List<TileData> tiles;
   }
 
+  /// <summary>Dijkstras algorithm returns all paths to the Start position,
+  /// since that operation can take a while to complete depending on the amount of nodes
+  /// we cache the results </summary>
   public struct CachedPath
   {
+    /// <summary>Key is the coordinate and value is
+    /// how long it would take to reach the start position </summary>
     public Dictionary<string, float> shortestPath;
+
+    /// <summary>Key is the coordinate and value is the shortest next path to Start</summary>
     public Dictionary<string, string> previousNodes;
   }
 
@@ -92,15 +107,23 @@ namespace DroneGame
       GenerateGrid(parsed);
     }
 
+    /// <summary>This is meant to be called from a button in the UI
+    /// This method does:
+    /// * Set some colors for a couple tiles
+    /// * Get inputs from the UI
+    /// * Call the pathfinding functions
+    /// * Start the drone Coroutine that makes it move
+    /// </summary>
     public void MoveDrone()
     {
       if (_drone.alreadyMoving) return;
 
-      var start = _startCoordinateInput.text;
-      var pickup = _pickupCoordinateInput.text;
-      var dropOff = _dropOffCoordinateInput.text;
+      var start = _startCoordinateInput.text.ToUpper();
+      var pickup = _pickupCoordinateInput.text.ToUpper();
+      var dropOff = _dropOffCoordinateInput.text.ToUpper();
 
-      ResetColors();
+      foreach (var currTile in _changedColorsTiles) currTile.ResetColor();
+      _changedColorsTiles.Clear();
       SetColor(start, Color.green);
       SetColor(pickup, Color.yellow);
       SetColor(dropOff, Color.blue);
@@ -114,12 +137,7 @@ namespace DroneGame
       StartCoroutine(_drone.FollowPath(shortestPath.tiles));
     }
 
-    private void ResetColors()
-    {
-      foreach (var currTile in _changedColorsTiles) currTile.ResetColor();
-      _changedColorsTiles.Clear();
-    }
-
+    /// <summary>Set color of a tile based o it's coordinates</summary>
     private void SetColor(string coords, Color color)
     {
       var tileToChange = _allTiles[coords];
@@ -127,6 +145,7 @@ namespace DroneGame
       _changedColorsTiles.Add(tileToChange);
     }
 
+    /// <summary>Download and parse the API</summary>
     ParsedData DownloadAndParseGridData(string url)
     {
       using var wc = new WebClient();
@@ -134,6 +153,7 @@ namespace DroneGame
       return JsonConvert.DeserializeObject<ParsedData>(json);
     }
 
+    /// <summary>Generate grid based on the parsed API</summary>
     void GenerateGrid(ParsedData parsed)
     {
       _allTilesData = new();
@@ -167,7 +187,8 @@ namespace DroneGame
       }
     }
 
-    /// <summary>Return an already created tile or create a new one if a tile with the coordinates does not already exist</summary>
+    /// <summary>Return an already created tile or create a new one if a tile
+    /// with the coordinates does not already exist</summary>
     /// <param name="key">The coordinate in the format A2</param>
     /// <returns>A brand new or already existing Tile</returns>
     private TileData GetOrCreateTile(string key)
@@ -232,9 +253,9 @@ namespace DroneGame
       };
     }
 
-
     /// <summary>Find the shortest paths between start and end using Dijkstras algorithm
-    /// All paths to start node are automatically cached so if it is asked again, there's no need to recalculate it</summary>
+    /// All paths to start node are automatically cached so if it is asked
+    /// again, there's no need to recalculate it</summary>
     /// <seealso cref="FindAllPathsFrom"/>
     public PathReturn GetShortestPath(string startPosition, string endPosition)
     {
@@ -325,6 +346,7 @@ namespace DroneGame
       };
     }
 
+    /// <summary>Get all neighbors of the tile<summary>
     Dictionary<string, float> GetNeighbors(string coordinates) => _allTilesData[coordinates].neighbors;
   }
 }

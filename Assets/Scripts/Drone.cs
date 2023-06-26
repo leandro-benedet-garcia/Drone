@@ -19,6 +19,9 @@ namespace DroneGame
 
     /// <summary>This is here to mostly just setup the height, but it's a vector3 to facilitate to use in math</summary>
     [SerializeField] Vector3 _coordinateAdjustment;
+
+
+    /// <summary>Default Unity event, Start executes when th object is instantiated and happens after Awake is executed</summary>
     void Start()
     {
       _grid = GameObject.Find("Grid").GetComponent<Grid>() ?? throw new("Grid not found");
