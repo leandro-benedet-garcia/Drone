@@ -61,12 +61,12 @@ namespace DroneGame.Tests
                                       "H8"};
 
       // Nothing is done, A1 needs to be returned immediately
-      var calculatedPath = _grid.GetShortestPath("A1", "A1");
+      var calculatedPath = _grid.GetShortestPath("A1", "A1").path;
       Assert.AreEqual(A1ToA1, calculatedPath);
 
       var watch = Stopwatch.StartNew();
       // Now the algorithm needs to work.
-      calculatedPath = _grid.GetShortestPath("A1", "A3");
+      calculatedPath = _grid.GetShortestPath("A1", "A3").path;
       Assert.AreEqual(A1ToA3, calculatedPath);
       watch.Stop();
 
@@ -74,24 +74,24 @@ namespace DroneGame.Tests
 
       watch = Stopwatch.StartNew();
       // This one must be executed faster than the first time because of cache
-      calculatedPath = _grid.GetShortestPath("A1", "A3");
+      calculatedPath = _grid.GetShortestPath("A1", "A3").path;
       Assert.AreEqual(A1ToA3, calculatedPath);
       watch.Stop();
       Assert.Less(watch.ElapsedMilliseconds, firstRunTime);
 
-      calculatedPath = _grid.GetShortestPath("A1", "A4");
+      calculatedPath = _grid.GetShortestPath("A1", "A4").path;
       Assert.AreEqual(A1ToA4, calculatedPath);
 
-      calculatedPath = _grid.GetShortestPath("A1", "H8");
+      calculatedPath = _grid.GetShortestPath("A1", "H8").path;
       Assert.AreEqual(A1ToH8, calculatedPath);
 
-      calculatedPath = _grid.GetShortestPath(new string[] { "A1", "H8" });
+      calculatedPath = _grid.GetShortestPath(new string[] { "A1", "H8" }).path;
       Assert.AreEqual(A1ToH8, calculatedPath);
 
-      calculatedPath = _grid.GetShortestPath(new string[] { "A1", "F5", "H8" });
+      calculatedPath = _grid.GetShortestPath(new string[] { "A1", "F5", "H8" }).path;
       Assert.AreEqual(A1ToH8, calculatedPath);
 
-      calculatedPath = _grid.GetShortestPath(new string[] { "A1", "F5", "G6", "H8" });
+      calculatedPath = _grid.GetShortestPath(new string[] { "A1", "F5", "G6", "H8" }).path;
       Assert.AreEqual(A1ToH8, calculatedPath);
     }
   }

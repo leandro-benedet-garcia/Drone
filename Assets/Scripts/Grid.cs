@@ -3,13 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 
 using UnityEngine;
+using TMPro;
 
 using Newtonsoft.Json;
 
 using MyBox;
-using System;
-using UnityEngine.Tilemaps;
-using TMPro;
 
 namespace DroneGame
 {
@@ -18,14 +16,28 @@ namespace DroneGame
 
   }
 
+  public struct PathReturn
+  {
+    public float totalTime;
+    public List<string> path;
+    public List<TileData> tiles;
+  }
+
+  public struct CachedPath
+  {
+    public Dictionary<string, float> shortestPath;
+    public Dictionary<string, string> previousNodes;
+  }
+
   /// <summary>The 2D grid that will be used for the path finding</summary>
   public sealed class Grid : MonoBehaviour
   {
+
     public string url = "https://mocki.io/v1/10404696-fd43-4481-a7ed-f9369073252f";
-    readonly Dictionary<string, Dictionary<string, string>> _cachedPaths = new();
+    readonly Dictionary<string, CachedPath> _cachedPaths = new();
     public ParsedData parsed;
 
-    [Header("Prefabs")]
+    [Header("Prefabs/Assets")]
     [SerializeField] Tile _tilePrefab;
     [SerializeField] Connector _connectorPrefab;
     [SerializeField] Drone _drone;
@@ -35,20 +47,23 @@ namespace DroneGame
     [SerializeField] TMP_InputField _pickupCoordinateInput;
     [SerializeField] TMP_InputField _dropOffCoordinateInput;
 
+    [Header("Other UI")]
+    [SerializeField] TextMeshProUGUI _pathElement;
+
 
     readonly HashSet<Tile> _changedColorsTiles = new();
 
     /// <summary>Dict used to convert from letters to numbers</summary>
     private readonly Dictionary<char, int> _letterToInt = new(){
-            {'A', 0},
-            {'B', 1},
-            {'C', 2},
-            {'D', 3},
-            {'E', 4},
-            {'F', 5},
-            {'G', 6},
-            {'H', 7}
-        };
+        {'A', 0},
+        {'B', 1},
+        {'C', 2},
+        {'D', 3},
+        {'E', 4},
+        {'F', 5},
+        {'G', 6},
+        {'H', 7}
+    };
     Dictionary<string, TileData> _allTilesData;
     Dictionary<string, Tile> _allTiles;
 
@@ -80,12 +95,16 @@ namespace DroneGame
       SetColor(pickup, Color.yellow);
       SetColor(dropOff, Color.blue);
 
-      StartCoroutine(_drone.FollowPath(GetShortestPathTiles(new string[] { start, pickup, dropOff })));
+      var shortestPath = GetShortestPath(new string[] { start, pickup, dropOff });
+
+      _pathElement.text = $"Path: {string.Join(" -> ", shortestPath.path)}\nTotal Time:{shortestPath.totalTime}";
+
+      StartCoroutine(_drone.FollowPath(shortestPath.tiles));
     }
 
     private void ResetColors()
     {
-      foreach(var currTile in _changedColorsTiles) currTile.ResetColor();
+      foreach (var currTile in _changedColorsTiles) currTile.ResetColor();
       _changedColorsTiles.Clear();
     }
 
@@ -165,57 +184,63 @@ namespace DroneGame
       return new(firstNumber, 0, secondNumber);
     }
 
-    public List<TileData> GetShortestPathTiles(string startPosition, string endPosition)
-    {
-      var returnList = new List<TileData>();
-      foreach (var currCoordinate in GetShortestPath(startPosition, endPosition)) returnList.Add(_allTilesData[currCoordinate]);
-      return returnList;
-    }
-
-    public List<TileData> GetShortestPathTiles(string[] positions)
-    {
-      var returnList = new List<TileData>();
-      foreach (var currCoordinate in GetShortestPath(positions)) returnList.Add(_allTilesData[currCoordinate]);
-      return returnList;
-    }
-
     // TODO: Convert this into an async operation
-    public List<string> GetShortestPath(string[] positions)
+    public PathReturn GetShortestPath(string[] positions)
     {
       var positionsLen = positions.Length;
       if (positionsLen < 2) throw new("positions need to have at least 2 items");
 
-      var returnList = new List<string>();
+      var totalTime = 0f;
+
+      var path = new List<string>();
+      var tiles = new List<TileData>();
+
       for (int pathIndex = 1; pathIndex < positionsLen; pathIndex++)
       {
         var previousCoordinate = positions[pathIndex - 1];
         var nextCoordinate = positions[pathIndex];
 
         var currPath = GetShortestPath(previousCoordinate, nextCoordinate);
+        totalTime += currPath.totalTime;
 
-        if (pathIndex < positionsLen - 1) currPath.RemoveAt(currPath.Count - 1);
+        if (pathIndex < positionsLen - 1)
+        {
+          currPath.path.RemoveAt(currPath.path.Count - 1);
+          currPath.tiles.RemoveAt(currPath.tiles.Count - 1);
+        }
 
-        returnList = returnList.Concat(currPath).ToList();
+        path = path.Concat(currPath.path).ToList();
+        tiles = tiles.Concat(currPath.tiles).ToList();
       }
-      return returnList;
+      return new()
+      {
+        path = path,
+        totalTime = totalTime,
+        tiles = tiles
+      };
     }
 
 
     /// <summary>Find the shortest paths between start and end using Dijkstras algorithm
     /// All paths to start node are automatically cached so if it is asked again, there's no need to recalculate it</summary>
     /// <seealso cref="FindAllPathsFrom"/>
-    public List<string> GetShortestPath(string startPosition, string endPosition)
+    public PathReturn GetShortestPath(string startPosition, string endPosition)
     {
       // If the API were dynamic, we would recreate the grid in here by simply called Awake after deleting the grid
       // But since it is static, we don't have to.
-      Dictionary<string, string> currCachedPath;
+      CachedPath currCachedPath;
       var path = new List<string>();
 
       // No need to do anything other than return start position if the start and end are the same
       if (startPosition == endPosition)
       {
         path.Add(startPosition);
-        return path;
+        return new PathReturn()
+        {
+          path = path,
+          totalTime = 0,
+          tiles = new() { _allTilesData[path[0]] }
+        };
       }
       if (_cachedPaths.ContainsKey(startPosition)) currCachedPath = _cachedPaths[startPosition];
       else
@@ -225,20 +250,28 @@ namespace DroneGame
       }
 
       var node = endPosition;
+      var previousNodes = currCachedPath.previousNodes;
       while (node != startPosition)
       {
         path.Add(node);
-        node = currCachedPath[node];
+        node = previousNodes[node];
       }
+
       path.Add(startPosition);
       path.Reverse();
-      return path;
+
+      return new()
+      {
+        path = path,
+        totalTime = currCachedPath.shortestPath[endPosition],
+        tiles = (from currCoordinate in path select _allTilesData[currCoordinate]).ToList()
+      };
     }
 
     /// <summary>Find all paths to the start position using Dijkstras algorithm
     /// This is necessary because the API only have seconds instead of distance, which we can use as weight
     /// if we had distance information, we could use A* which is more effective</summary>
-    Dictionary<string, string> FindAllPathsFrom(string startPosition)
+    CachedPath FindAllPathsFrom(string startPosition)
     {
       var unvisitedNodes = _allTilesData.Keys.ToList();
       var shortestPath = new Dictionary<string, float>();
@@ -273,7 +306,11 @@ namespace DroneGame
         }
         unvisitedNodes.Remove(minNode);
       }
-      return previousNodes;
+      return new CachedPath
+      {
+        shortestPath = shortestPath,
+        previousNodes = previousNodes
+      };
     }
 
     Dictionary<string, float> GetNeighbors(string coordinates) => _allTilesData[coordinates].neighbors;
