@@ -49,3 +49,9 @@ MonoBehaviour:
     type: 3}
   _connectorPrefab: {fileID: 8036127167060837372, guid: 5e51edae318fcb9beab66b3323ed21f0,
     type: 3}
+  _drone: {fileID: 0}
+  _startCoordinateInput: {fileID: 0}
+  _pickupCoordinateInput: {fileID: 0}
+  _dropOffCoordinateInput: {fileID: 0}
+  _pathElement: {fileID: 0}
+  _pathHistoryUi: {fileID: 0}
