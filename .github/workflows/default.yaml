@@ -38,6 +38,16 @@ jobs:
         with:
           name: Test results (all modes)
           path: ${{ steps.testRunner.outputs.artifactsPath }}
+      - name: Code Coverage GH Pages Deployment
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          destination_dir: code_coverage
+          publish_dir: CodeCoverage/
+          enable_jekyll: true
+          allow_empty_commit: false
+          publish_branch: gh-pages
+          deploy_key: ${{ secrets.ACTIONS_DEPLOY_KEY }}
 
   BuildWebGL:
     needs: TestRunner
