@@ -1,4 +1,4 @@
-name: GitHub Actions Demo
+name: Generate Docs
 on: [push]
 jobs:
   docs:
@@ -12,8 +12,9 @@ jobs:
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./doc/html/
+          publish_dir: docs/html/
           enable_jekyll: true
           allow_empty_commit: false
           publish_branch: gh-pages
+          destination_dir: docs
           deploy_key: ${{ secrets.ACTIONS_DEPLOY_KEY }}

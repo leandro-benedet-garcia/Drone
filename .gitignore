@@ -1,6 +1,7 @@
 .vscode/
 Thumbs.db
 Thumbs.db.meta
+/docs/
 
 # This .gitignore file should be placed at the root of your Unity project directory
 #
@@ -30,7 +31,6 @@ Thumbs.db.meta
 
 # Visual Studio cache directory
 .vs/
-/html/
 
 # Gradle cache directory
 .gradle/
