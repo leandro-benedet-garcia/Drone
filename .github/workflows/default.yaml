@@ -43,6 +43,7 @@ jobs:
     needs: TestRunner
     name: Build for WebGL
     runs-on: ubuntu-latest
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags')
     strategy:
       fail-fast: false
     steps:
@@ -76,3 +77,12 @@ jobs:
             UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
         with:
             targetPlatform: WebGL
+      - name: GH Pages Deployment
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: build/
+          enable_jekyll: true
+          allow_empty_commit: false
+          publish_branch: gh-pages
+          deploy_key: ${{ secrets.ACTIONS_DEPLOY_KEY }}
