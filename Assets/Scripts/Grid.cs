@@ -36,6 +36,7 @@ namespace DroneGame
     public string url = "https://mocki.io/v1/10404696-fd43-4481-a7ed-f9369073252f";
     readonly Dictionary<string, CachedPath> _cachedPaths = new();
     public ParsedData parsed;
+    List<string> _pathHistory = new();
 
     [Header("Prefabs/Assets")]
     [SerializeField] Tile _tilePrefab;
@@ -49,6 +50,7 @@ namespace DroneGame
 
     [Header("Other UI")]
     [SerializeField] TextMeshProUGUI _pathElement;
+    [SerializeField] TextMeshProUGUI _pathHistoryUi;
 
 
     readonly HashSet<Tile> _changedColorsTiles = new();
@@ -66,10 +68,18 @@ namespace DroneGame
     };
     Dictionary<string, TileData> _allTilesData;
     Dictionary<string, Tile> _allTiles;
+    string _lastPath;
 
     public TileData this[string coordinate]
     {
       get => _allTilesData[coordinate];
+    }
+
+    void PushToHistory(string entry)
+    {
+      _pathHistory.Add(entry);
+      var historyCount = _pathHistory.Count;
+      if (historyCount > 5) _pathHistory.RemoveAt(0);
     }
 
     public Vector3 GetTileWorldCoordinate(string coordinate) => _allTilesData[coordinate].globalCoordinates;
@@ -95,9 +105,11 @@ namespace DroneGame
       SetColor(pickup, Color.yellow);
       SetColor(dropOff, Color.blue);
 
+      if (_lastPath != null) PushToHistory(_lastPath);
       var shortestPath = GetShortestPath(new string[] { start, pickup, dropOff });
-
-      _pathElement.text = $"Path: {string.Join(" -> ", shortestPath.path)}\nTotal Time:{shortestPath.totalTime}";
+      _lastPath = $"Path: {string.Join(" -> ", shortestPath.path)}\nTotal Time:{shortestPath.totalTime}";
+      _pathElement.text = _lastPath;
+      _pathHistoryUi.text = string.Join('\n', _pathHistory);
 
       StartCoroutine(_drone.FollowPath(shortestPath.tiles));
     }
