@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CoverageReport scope="Summary">
+  <Summary>
+    <Generatedon>06/26/2023 - 17:40:52</Generatedon>
+    <Parser>MultiReportParser (3x OpenCoverParser)</Parser>
+    <Assemblies>2</Assemblies>
+    <Classes>7</Classes>
+    <Files>7</Files>
+    <Coveredlines>196</Coveredlines>
+    <Uncoveredlines>77</Uncoveredlines>
+    <Coverablelines>273</Coverablelines>
+    <Totallines>598</Totallines>
+    <Linecoverage>71.7</Linecoverage>
+    <Coveredbranches>0</Coveredbranches>
+    <Totalbranches>0</Totalbranches>
+    <Coveredmethods>16</Coveredmethods>
+    <Totalmethods>28</Totalmethods>
+    <Methodcoverage>57.1</Methodcoverage>
+  </Summary>
+  <Coverage>
+    <Assembly name="Drone" classes="5" coverage="66.8" coveredlines="145" coverablelines="217" totallines="489" branchcoverage="" coveredbranches="0" totalbranches="0" coveredmethods="13" totalmethods="24" methodcoverage="54.1">
+      <Class name="DroneGame.Connector" coverage="100" coveredlines="9" coverablelines="9" totallines="23" branchcoverage="" coveredbranches="0" totalbranches="0" coveredmethods="1" totalmethods="1" methodcoverage="100" />
+      <Class name="DroneGame.Drone" coverage="0" coveredlines="0" coverablelines="22" totallines="53" branchcoverage="" coveredbranches="0" totalbranches="0" coveredmethods="0" totalmethods="2" methodcoverage="0" />
+      <Class name="DroneGame.Grid" coverage="80.5" coveredlines="128" coverablelines="159" totallines="330" branchcoverage="" coveredbranches="0" totalbranches="0" coveredmethods="11" totalmethods="16" methodcoverage="68.7" />
+      <Class name="DroneGame.Selection" coverage="0" coveredlines="0" coverablelines="13" totallines="40" branchcoverage="" coveredbranches="0" totalbranches="0" coveredmethods="0" totalmethods="2" methodcoverage="0" />
+      <Class name="DroneGame.Tile" coverage="57.1" coveredlines="8" coverablelines="14" totallines="43" branchcoverage="" coveredbranches="0" totalbranches="0" coveredmethods="1" totalmethods="3" methodcoverage="33.3" />
+    </Assembly>
+    <Assembly name="Tests" classes="2" coverage="91" coveredlines="51" coverablelines="56" totallines="109" branchcoverage="" coveredbranches="0" totalbranches="0" coveredmethods="3" totalmethods="4" methodcoverage="75">
+      <Class name="DroneGame.Tests.TestGrid" coverage="100" coveredlines="51" coverablelines="51" totallines="98" branchcoverage="" coveredbranches="0" totalbranches="0" coveredmethods="3" totalmethods="3" methodcoverage="100" />
+      <Class name="Utils" coverage="0" coveredlines="0" coverablelines="5" totallines="11" branchcoverage="" coveredbranches="0" totalbranches="0" coveredmethods="0" totalmethods="1" methodcoverage="0" />
+    </Assembly>
+  </Coverage>
+</CoverageReport>

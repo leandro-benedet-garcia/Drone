@@ -1,0 +1,31 @@
+{
+  "summary": {
+    "generatedon": "2023-06-26T17:40:51Z",
+    "parser": "MultiReportParser (3x OpenCoverParser)",
+    "assemblies": 2,
+    "classes": 7,
+    "files": 7,
+    "coveredlines": 196,
+    "uncoveredlines": 77,
+    "coverablelines": 273,
+    "totallines": 598,
+    "linecoverage": 71.7,
+    "coveredbranches": 0,
+    "totalbranches": 0,
+    "coveredmethods": 16,
+    "totalmethods": 28,
+    "methodcoverage": 57.1
+ },
+  "coverage": {
+    "assemblies": [
+      { "name": "Drone", "classes": 5, "coverage": 66.8, "coveredlines": 145, "coverablelines": 217, "totallines": 489, "branchcoverage": null, "coveredbranches": 0, "totalbranches": 0, "methodcoverage": 54.1, "coveredmethods": 13, "totalmethods": 24, "classesinassembly": [
+        { "name": "DroneGame.Connector", "coverage": 100, "coveredlines": 9, "coverablelines": 9, "totallines": 23, "branchcoverage": null, "coveredbranches": 0, "totalbranches": 0, "methodcoverage": 100, "coveredmethods": 1, "totalmethods": 1 },
+        { "name": "DroneGame.Drone", "coverage": 0, "coveredlines": 0, "coverablelines": 22, "totallines": 53, "branchcoverage": null, "coveredbranches": 0, "totalbranches": 0, "methodcoverage": 0, "coveredmethods": 0, "totalmethods": 2 },
+        { "name": "DroneGame.Grid", "coverage": 80.5, "coveredlines": 128, "coverablelines": 159, "totallines": 330, "branchcoverage": null, "coveredbranches": 0, "totalbranches": 0, "methodcoverage": 68.7, "coveredmethods": 11, "totalmethods": 16 },
+        { "name": "DroneGame.Selection", "coverage": 0, "coveredlines": 0, "coverablelines": 13, "totallines": 40, "branchcoverage": null, "coveredbranches": 0, "totalbranches": 0, "methodcoverage": 0, "coveredmethods": 0, "totalmethods": 2 },
+        { "name": "DroneGame.Tile", "coverage": 57.1, "coveredlines": 8, "coverablelines": 14, "totallines": 43, "branchcoverage": null, "coveredbranches": 0, "totalbranches": 0, "methodcoverage": 33.3, "coveredmethods": 1, "totalmethods": 3 } ] },
+      { "name": "Tests", "classes": 2, "coverage": 91, "coveredlines": 51, "coverablelines": 56, "totallines": 109, "branchcoverage": null, "coveredbranches": 0, "totalbranches": 0, "methodcoverage": 75, "coveredmethods": 3, "totalmethods": 4, "classesinassembly": [
+        { "name": "DroneGame.Tests.TestGrid", "coverage": 100, "coveredlines": 51, "coverablelines": 51, "totallines": 98, "branchcoverage": null, "coveredbranches": 0, "totalbranches": 0, "methodcoverage": 100, "coveredmethods": 3, "totalmethods": 3 },
+        { "name": "Utils", "coverage": 0, "coveredlines": 0, "coverablelines": 5, "totallines": 11, "branchcoverage": null, "coveredbranches": 0, "totalbranches": 0, "methodcoverage": 0, "coveredmethods": 0, "totalmethods": 1 } ] } ]
+  }
+}
