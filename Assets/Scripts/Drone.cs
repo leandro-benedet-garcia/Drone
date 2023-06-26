@@ -1,17 +1,20 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace DroneGame
 {
   class Drone : MonoBehaviour
   {
     Grid _grid;
+    Button _button;
+
     public bool alreadyMoving;
 
     /// <summary>Set the move speed of the drone</summary>
     [SerializeField]
-    [Range(0.1f, 1.0f)]
+    [Range(0.1f, 10.0f)]
     float _moveSpeed;
 
     /// <summary>This is here to mostly just setup the height, but it's a vector3 to facilitate to use in math</summary>
@@ -19,6 +22,7 @@ namespace DroneGame
     void Start()
     {
       _grid = GameObject.Find("Grid").GetComponent<Grid>() ?? throw new("Grid not found");
+      _button = GameObject.Find("CalculateAndMoveButton").GetComponent<Button>() ?? throw new("Button not found");
       transform.position = _grid.GetTileWorldCoordinate("A1") + _coordinateAdjustment;
     }
 
@@ -29,6 +33,7 @@ namespace DroneGame
       if (alreadyMoving) throw new("Drone is already moving");
 
       alreadyMoving = true;
+      _button.interactable = false;
 
       for (int tileIndex = 1; tileIndex < path.Count; tileIndex++)
       {
@@ -48,6 +53,7 @@ namespace DroneGame
         }
       }
       alreadyMoving = false;
+      _button.interactable = true;
     }
   }
 }

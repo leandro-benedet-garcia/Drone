@@ -47,7 +47,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   alreadyMoving: 0
-  _moveSpeed: 1
+  _moveSpeed: 4.5
   _coordinateAdjustment: {x: 0, y: 0.5, z: 0}
 --- !u!111 &5675670759822426310
 Animation:
