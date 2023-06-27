@@ -13,7 +13,7 @@ pathfinding algorithm instead of A*.
 
 * [Code Documentation](https://leandro-benedet-garcia.github.io/Drone/docs/)
 * [Coverage Data](https://leandro-benedet-garcia.github.io/Drone/code_coverage/)
-* Game Build (I am doing this manually for now)
+* [Game Build](https://leandro-benedet-garcia.github.io/Drone/build/) (I am doing this manually for now)
 
 PS: I really like how I made a entire path finding system without ever using a
 single `Update()`. I wonder if it would be possible to do a couple things without
