@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 namespace DroneGame
 {
-  class Drone : MonoBehaviour
+  public class Drone : MonoBehaviour
   {
     Grid _grid;
     Button _button;
@@ -35,8 +35,9 @@ namespace DroneGame
       if (alreadyMoving) throw new("Drone is already moving");
 
       alreadyMoving = true;
+#if !UNITY_INCLUDE_TESTS
       _button.interactable = false;
-
+#endif
       for (int tileIndex = 1; tileIndex < path.Count; tileIndex++)
       {
         var currLerp = 0f;
@@ -55,7 +56,9 @@ namespace DroneGame
         }
       }
       alreadyMoving = false;
+#if !UNITY_INCLUDE_TESTS
       _button.interactable = true;
+#endif
     }
   }
 }

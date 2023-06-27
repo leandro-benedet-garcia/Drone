@@ -100,5 +100,20 @@ namespace DroneGame.Tests
       calculatedPath = _grid.GetShortestPath(new string[] { "A1", "F5", "G6", "H8" }).path;
       Assert.AreEqual(A1ToH8, calculatedPath);
     }
+
+    [UnityTest]
+    public IEnumerator TestDroneMove()
+    {
+      while(_grid.parsed == null) yield return null;
+
+      var dronePrefab = Resources.Load<Drone>("Drone/Drone") ?? throw new("Resource Drone Not found");
+      var drone = Object.Instantiate(dronePrefab);
+
+
+      var first = _grid["A1"];
+      var second = _grid["A2"];
+
+      drone.StartCoroutine(drone.FollowPath(new(){first, second}));
+    }
   }
 }

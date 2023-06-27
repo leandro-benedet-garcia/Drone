@@ -158,10 +158,15 @@ namespace DroneGame
 
       var json = www.downloadHandler.text;
       parsed = JsonConvert.DeserializeObject<ParsedData>(json);
-      _loading.gameObject.SetActive(false);
+      _loading?.gameObject.SetActive(false);
 
+#if !UNITY_INCLUDE_TESTS
+      if (_loading == null) throw new("Loading UI not defined");
+#endif
       GenerateGrid(parsed);
+#if !UNITY_INCLUDE_TESTS
       _drone.Initialize(this);
+#endif
     }
 
     /// <summary>Generate grid based on the parsed API</summary>
