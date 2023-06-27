@@ -9,6 +9,8 @@ jobs:
           lfs: 'true'
           submodules: 'recursive'
           ssh-key: ${{ secrets.git_ssh_key }}
+      - name: Checkout LFS objects
+        run: git lfs checkout
       - uses: actions/cache@v2
         with:
             path: Library
@@ -50,6 +52,8 @@ jobs:
           lfs: 'true'
           submodules: 'recursive'
           ssh-key: ${{ secrets.git_ssh_key }}
+      - name: Checkout LFS objects
+        run: git lfs checkout
       - name: Restore Library cache
         uses: actions/cache@v2
         with:
