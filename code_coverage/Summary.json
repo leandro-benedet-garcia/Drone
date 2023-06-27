@@ -1,31 +1,31 @@
 {
   "summary": {
-    "generatedon": "2023-06-26T20:32:43Z",
+    "generatedon": "2023-06-27T04:09:23Z",
     "parser": "MultiReportParser (3x OpenCoverParser)",
     "assemblies": 2,
     "classes": 7,
     "files": 7,
-    "coveredlines": 195,
-    "uncoveredlines": 73,
-    "coverablelines": 268,
-    "totallines": 639,
-    "linecoverage": 72.7,
+    "coveredlines": 226,
+    "uncoveredlines": 53,
+    "coverablelines": 279,
+    "totallines": 678,
+    "linecoverage": 81,
     "coveredbranches": 0,
     "totalbranches": 0,
-    "coveredmethods": 16,
-    "totalmethods": 27,
-    "methodcoverage": 59.2
+    "coveredmethods": 18,
+    "totalmethods": 28,
+    "methodcoverage": 64.2
  },
   "coverage": {
     "assemblies": [
-      { "name": "Drone", "classes": 5, "coverage": 67.9, "coveredlines": 144, "coverablelines": 212, "totallines": 530, "branchcoverage": null, "coveredbranches": 0, "totalbranches": 0, "methodcoverage": 56.5, "coveredmethods": 13, "totalmethods": 23, "classesinassembly": [
+      { "name": "Drone", "classes": 5, "coverage": 77.4, "coveredlines": 165, "coverablelines": 213, "totallines": 548, "branchcoverage": null, "coveredbranches": 0, "totalbranches": 0, "methodcoverage": 60.8, "coveredmethods": 14, "totalmethods": 23, "classesinassembly": [
         { "name": "DroneGame.Connector", "coverage": 100, "coveredlines": 9, "coverablelines": 9, "totallines": 28, "branchcoverage": null, "coveredbranches": 0, "totalbranches": 0, "methodcoverage": 100, "coveredmethods": 1, "totalmethods": 1 },
-        { "name": "DroneGame.Drone", "coverage": 0, "coveredlines": 0, "coverablelines": 25, "totallines": 62, "branchcoverage": null, "coveredbranches": 0, "totalbranches": 0, "methodcoverage": 0, "coveredmethods": 0, "totalmethods": 2 },
-        { "name": "DroneGame.Grid", "coverage": 82, "coveredlines": 128, "coverablelines": 156, "totallines": 352, "branchcoverage": null, "coveredbranches": 0, "totalbranches": 0, "methodcoverage": 73.3, "coveredmethods": 11, "totalmethods": 15 },
+        { "name": "DroneGame.Drone", "coverage": 78.2, "coveredlines": 18, "coverablelines": 23, "totallines": 64, "branchcoverage": null, "coveredbranches": 0, "totalbranches": 0, "methodcoverage": 50, "coveredmethods": 1, "totalmethods": 2 },
+        { "name": "DroneGame.Grid", "coverage": 82.3, "coveredlines": 131, "coverablelines": 159, "totallines": 368, "branchcoverage": null, "coveredbranches": 0, "totalbranches": 0, "methodcoverage": 73.3, "coveredmethods": 11, "totalmethods": 15 },
         { "name": "DroneGame.Selection", "coverage": 0, "coveredlines": 0, "coverablelines": 13, "totallines": 41, "branchcoverage": null, "coveredbranches": 0, "totalbranches": 0, "methodcoverage": 0, "coveredmethods": 0, "totalmethods": 2 },
         { "name": "DroneGame.Tile", "coverage": 77.7, "coveredlines": 7, "coverablelines": 9, "totallines": 47, "branchcoverage": null, "coveredbranches": 0, "totalbranches": 0, "methodcoverage": 33.3, "coveredmethods": 1, "totalmethods": 3 } ] },
-      { "name": "Tests", "classes": 2, "coverage": 91, "coveredlines": 51, "coverablelines": 56, "totallines": 109, "branchcoverage": null, "coveredbranches": 0, "totalbranches": 0, "methodcoverage": 75, "coveredmethods": 3, "totalmethods": 4, "classesinassembly": [
-        { "name": "DroneGame.Tests.TestGrid", "coverage": 100, "coveredlines": 51, "coverablelines": 51, "totallines": 98, "branchcoverage": null, "coveredbranches": 0, "totalbranches": 0, "methodcoverage": 100, "coveredmethods": 3, "totalmethods": 3 },
+      { "name": "Tests", "classes": 2, "coverage": 92.4, "coveredlines": 61, "coverablelines": 66, "totallines": 130, "branchcoverage": null, "coveredbranches": 0, "totalbranches": 0, "methodcoverage": 80, "coveredmethods": 4, "totalmethods": 5, "classesinassembly": [
+        { "name": "DroneGame.Tests.TestGrid", "coverage": 100, "coveredlines": 61, "coverablelines": 61, "totallines": 119, "branchcoverage": null, "coveredbranches": 0, "totalbranches": 0, "methodcoverage": 100, "coveredmethods": 4, "totalmethods": 4 },
         { "name": "Utils", "coverage": 0, "coveredlines": 0, "coverablelines": 5, "totallines": 11, "branchcoverage": null, "coveredbranches": 0, "totalbranches": 0, "methodcoverage": 0, "coveredmethods": 0, "totalmethods": 1 } ] } ]
   }
 }

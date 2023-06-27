@@ -225,15 +225,15 @@ var assemblies = [
     "name": "Drone",
     "classes": [
       { "name": "DroneGame.Connector", "rp": "Drone_Connector.html", "cl": 9, "ucl": 0, "cal": 9, "tl": 28, "ct": "LineCoverage", "mc": "-", "cb": 0, "tb": 0, "lch": [], "bch": [], "hc": [] },
-      { "name": "DroneGame.Drone", "rp": "Drone_Drone.html", "cl": 0, "ucl": 25, "cal": 25, "tl": 62, "ct": "LineCoverage", "mc": "-", "cb": 0, "tb": 0, "lch": [], "bch": [], "hc": [] },
-      { "name": "DroneGame.Grid", "rp": "Drone_Grid.html", "cl": 128, "ucl": 28, "cal": 156, "tl": 352, "ct": "LineCoverage", "mc": "-", "cb": 0, "tb": 0, "lch": [], "bch": [], "hc": [] },
+      { "name": "DroneGame.Drone", "rp": "Drone_Drone.html", "cl": 18, "ucl": 5, "cal": 23, "tl": 64, "ct": "LineCoverage", "mc": "-", "cb": 0, "tb": 0, "lch": [], "bch": [], "hc": [] },
+      { "name": "DroneGame.Grid", "rp": "Drone_Grid.html", "cl": 131, "ucl": 28, "cal": 159, "tl": 368, "ct": "LineCoverage", "mc": "-", "cb": 0, "tb": 0, "lch": [], "bch": [], "hc": [] },
       { "name": "DroneGame.Selection", "rp": "Drone_Selection.html", "cl": 0, "ucl": 13, "cal": 13, "tl": 41, "ct": "LineCoverage", "mc": "-", "cb": 0, "tb": 0, "lch": [], "bch": [], "hc": [] },
       { "name": "DroneGame.Tile", "rp": "Drone_Tile.html", "cl": 7, "ucl": 2, "cal": 9, "tl": 47, "ct": "LineCoverage", "mc": "-", "cb": 0, "tb": 0, "lch": [], "bch": [], "hc": [] },
     ]},
   {
     "name": "Tests",
     "classes": [
-      { "name": "DroneGame.Tests.TestGrid", "rp": "Tests_TestGrid.html", "cl": 51, "ucl": 0, "cal": 51, "tl": 98, "ct": "LineCoverage", "mc": "-", "cb": 0, "tb": 0, "lch": [], "bch": [], "hc": [] },
+      { "name": "DroneGame.Tests.TestGrid", "rp": "Tests_TestGrid.html", "cl": 61, "ucl": 0, "cal": 61, "tl": 119, "ct": "LineCoverage", "mc": "-", "cb": 0, "tb": 0, "lch": [], "bch": [], "hc": [] },
       { "name": "Utils", "rp": "Tests_Utils.html", "cl": 0, "ucl": 5, "cal": 5, "tl": 11, "ct": "LineCoverage", "mc": "-", "cb": 0, "tb": 0, "lch": [], "bch": [], "hc": [] },
     ]},
 ];
@@ -241,19 +241,9 @@ var assemblies = [
 var historicCoverageExecutionTimes = [];
 
 var riskHotspotMetrics = [
-      { "name": "Cyclomatic complexity", "explanationUrl": "https://en.wikipedia.org/wiki/Cyclomatic_complexity" },
-      { "name": "NPath complexity", "explanationUrl": "https://modess.io/npath-complexity-cyclomatic-complexity-explained" },
-      { "name": "Crap Score", "explanationUrl": "https://googletesting.blogspot.de/2011/02/this-code-is-crap.html" },
 ];
 
 var riskHotspots = [
-  {
-    "assembly": "Drone", "class": "DroneGame.Drone", "reportPath": "Drone_Drone.html", "methodName": "FollowPath()", "methodShortName": "FollowPath()", "fileIndex": 0, "line": 35,
-    "metrics": [
-      { "value": 6, "exceeded": false },
-      { "value": 0, "exceeded": false },
-      { "value": 42, "exceeded": true },
-    ]},
 ];
 
 var branchCoverageAvailable = true;
