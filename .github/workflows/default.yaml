@@ -1,4 +1,4 @@
-name: GitHub Actions Demo
+name: Test and Build Game
 on: [push]
 jobs:
   TestRunner:
@@ -10,7 +10,10 @@ jobs:
           submodules: 'recursive'
           ssh-key: ${{ secrets.git_ssh_key }}
       - name: Checkout LFS objects
-        run: git lfs checkout
+        run: |
+          git lfs fetch
+          git lfs checkout
+          git lfs pull
       - uses: actions/cache@v2
         with:
             path: Library
@@ -53,7 +56,10 @@ jobs:
           submodules: 'recursive'
           ssh-key: ${{ secrets.git_ssh_key }}
       - name: Checkout LFS objects
-        run: git lfs checkout
+        run: |
+          git lfs fetch
+          git lfs checkout
+          git lfs pull
       - name: Restore Library cache
         uses: actions/cache@v2
         with:
