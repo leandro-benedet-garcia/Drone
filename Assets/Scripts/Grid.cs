@@ -1,13 +1,15 @@
-using System.Net;
 using System.Collections.Generic;
 using System.Linq;
 
 using UnityEngine;
+using UnityEngine.Networking;
+
 using TMPro;
 
 using Newtonsoft.Json;
 
 using MyBox;
+using System.Collections;
 
 namespace DroneGame
 {
@@ -66,6 +68,7 @@ namespace DroneGame
     [Header("Other UI")]
     [SerializeField] TextMeshProUGUI _pathElement;
     [SerializeField] TextMeshProUGUI _pathHistoryUi;
+    [SerializeField] TextMeshProUGUI _loading;
 
 
     readonly HashSet<Tile> _changedColorsTiles = new();
@@ -103,8 +106,7 @@ namespace DroneGame
     [ButtonMethod]
     void Awake()
     {
-      parsed = DownloadAndParseGridData(url);
-      GenerateGrid(parsed);
+      StartCoroutine(DownloadAndParseGridData(url));
     }
 
     /// <summary>This is meant to be called from a button in the UI
@@ -146,11 +148,20 @@ namespace DroneGame
     }
 
     /// <summary>Download and parse the API</summary>
-    ParsedData DownloadAndParseGridData(string url)
+    IEnumerator DownloadAndParseGridData(string url)
     {
-      using var wc = new WebClient();
-      var json = wc.DownloadString(url);
-      return JsonConvert.DeserializeObject<ParsedData>(json);
+      var www = UnityWebRequest.Get(url);
+
+      yield return www.SendWebRequest();
+
+      if (www.result != UnityWebRequest.Result.Success) Debug.Log(www.error);
+
+      var json = www.downloadHandler.text;
+      parsed = JsonConvert.DeserializeObject<ParsedData>(json);
+      _loading.gameObject.SetActive(false);
+
+      GenerateGrid(parsed);
+      _drone.Initialize(this);
     }
 
     /// <summary>Generate grid based on the parsed API</summary>

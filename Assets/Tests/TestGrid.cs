@@ -1,9 +1,11 @@
 using NUnit.Framework;
 
 using UnityEngine;
+using UnityEngine.TestTools;
 
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Collections;
 
 namespace DroneGame.Tests
 {
@@ -18,9 +20,11 @@ namespace DroneGame.Tests
       _grid = Object.Instantiate(gridPrefab);
     }
 
-    [Test]
-    public void TestGridCreation()
+    [UnityTest]
+    public IEnumerator TestGridCreation()
     {
+      while(_grid.parsed == null) yield return null;
+
       foreach (var currTile in _grid.parsed)
       {
         var currCoordinate = currTile.Key;
@@ -47,9 +51,11 @@ namespace DroneGame.Tests
       }
     }
 
-    [Test]
-    public void TestShortestPath()
+    [UnityTest]
+    public IEnumerator TestShortestPath()
     {
+      while(_grid.parsed == null) yield return null;
+
       var A1ToA1 = new List<string>() { "A1" };
       var A1ToA3 = new List<string>() { "A1", "A2", "A3" };
       var A1ToA4 = new List<string>() { "A1", "A2", "A3", "A4" };
