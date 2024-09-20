@@ -11,8 +11,8 @@ material and the delivery point.
 Since the API has no distance data and only time, we will need to use Dijkstras
 pathfinding algorithm instead of A*.
 
-* [Code Documentation](https://leandro-benedet-garcia.github.io/Drone/docs/)
-* [Coverage Data](https://leandro-benedet-garcia.github.io/Drone/code_coverage/)
+* [Code Documentation](https://lag-killer-digital-entertainment.github.io/Drone/docs/annotated.html)
+* [Coverage Data](https://lag-killer-digital-entertainment.github.io/Drone/code_coverage/)
 * [Game Build](https://Lag-Killer-Digital-Entertainment.github.io/Drone/build/) (I am doing this manually for now)
 
 PS: I really like how I made a entire path finding system without ever using a
